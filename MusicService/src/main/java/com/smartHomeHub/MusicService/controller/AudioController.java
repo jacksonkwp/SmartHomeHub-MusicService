@@ -3,6 +3,7 @@ package com.smartHomeHub.MusicService.controller;
 import com.smartHomeHub.MusicService.model.Audio;
 import com.smartHomeHub.MusicService.service.AudioService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +15,7 @@ import java.util.List;
 @RequestMapping(path="/audio")
 public class AudioController {
 
+    @Autowired
     private AudioService audioService;
 
     @RequestMapping(value="/details/{filename}", method = RequestMethod.GET)
@@ -30,7 +32,7 @@ public class AudioController {
         return ResponseEntity.ok(audioFiles);
     }
 
-    @RequestMapping(value="/edit/{filename}",method = RequestMethod.PUT)
+    @RequestMapping(value="/edit/{filename}",method = RequestMethod.PATCH)
     public ResponseEntity<Audio> editAudio(@PathVariable("filename") String fileName, @RequestBody Audio audio) {
         return ResponseEntity.ok(audioService.editAudio(fileName, audio));
     }

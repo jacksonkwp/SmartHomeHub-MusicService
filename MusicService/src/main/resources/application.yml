@@ -4,12 +4,11 @@ spring:
   application:
     name: MusicService
   datasource:
-    url: jdbc:postgresql://musicservicedb:3306/db
+    url: jdbc:postgresql://localhost:5432/db
     driver-class-name: org.postgresql.Driver
     username: user
     password: password
   jpa:
-    defer-datasource-initialization: false
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: create

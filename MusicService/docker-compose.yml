@@ -4,21 +4,22 @@ services:
     image: postgres:latest
     container_name: musicservicedb
     environment:
-      MYSQL_DATABASE: musicservicedb
-      MYSQL_USER: user
-      MYSQL_PASSWORD: password
-      MYSQL_ROOT_PASSWORD: password
+      POSTGRES_DB: db
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_ROOT_PASSWORD: password
     ports:
-      - 3306:3306
+      - 5432:5432
   musicservice:
-    image: licensing-service:0.0.1-SNAPSHOT
+    image: musicservice:0.0.1-SNAPSHOT
+    container_name: musicservice
     depends_on:
-      - musicservicedb
+      - postgres
     ports:
-      - 8080:8080
+      - 8081:8081
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgresdb:3306/musicservicedb
+      SPRING_DATASOURCE_URL: jdbc:postgresql://musicservicedb:5432/db
       SPRING_DATASOURCE_USERNAME: user
       SPRING_DATASOURCE_PASSWORD: password
 volumes:
-  musicservicedb-data:
+  musicservice-data:
