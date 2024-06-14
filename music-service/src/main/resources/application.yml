@@ -3,16 +3,8 @@ server:
 spring:
   application:
     name: music-service
-  datasource:
-    url: jdbc:postgresql://localhost:5432/db
-    driver-class-name: org.postgresql.Driver
-    username: user
-    password: password
-  jpa:
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
-    hibernate:
-      ddl-auto: create
-      naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
+  profiles:
+    active: dev
   sql:
     init:
       mode: always
