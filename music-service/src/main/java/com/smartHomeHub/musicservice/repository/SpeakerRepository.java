@@ -8,7 +8,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface SpeakerRepository extends JpaRepository<Speaker, UUID> {
+public interface SpeakerRepository extends JpaRepository<Speaker, Long> {
 
     Optional<Speaker> findByRoom(String room);
     Optional<Speaker> findByName(String name);
