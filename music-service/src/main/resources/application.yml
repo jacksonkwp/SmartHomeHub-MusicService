@@ -8,3 +8,12 @@ spring:
   sql:
     init:
       mode: always
+
+eureka:
+  instance:
+    preferIpAddress: true
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: http://eurekaserver:8073/eureka/
