@@ -1,5 +1,6 @@
 server:
   port: 8081
+
 spring:
   application:
     name: music-service
@@ -8,6 +9,30 @@ spring:
   sql:
     init:
       mode: always
+  config:
+    import: "optional:configserver:http://configserver:8071"
+  datasource:
+    url: jdbc:postgresql://localhost:5432/db-dev
+    driver-class-name: org.postgresql.Driver
+    username: devuser
+    password: password
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: create
+      naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
+
+management:
+  endpoint:
+    health:
+      circuitbreakers:
+        enabled: true
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include:
+          health
 
 eureka:
   instance:
