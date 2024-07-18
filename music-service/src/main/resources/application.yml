@@ -36,7 +36,7 @@ spring:
             client-name: music-service
             client-id: music-service
             authorization-grant-type: authorization_code
-            client-secret: LupcWMGyTzWUrKIBTeXv6hbRNuSFXHqQ
+            client-secret: 7t65KiOCvW6rNsOU9ltyiSDAcrbfUm2o
             scope:
               - openid
               - offline_access
