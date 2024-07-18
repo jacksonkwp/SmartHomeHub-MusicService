@@ -2,6 +2,7 @@ package com.smartHomeHub.musicservice.controller;
 
 import com.smartHomeHub.musicservice.model.Speaker;
 import com.smartHomeHub.musicservice.service.SpeakerService;
+import jakarta.annotation.security.RolesAllowed;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,6 +19,7 @@ public class SpeakerController {
     @Autowired
     private SpeakerService speakerService;
 
+    @RolesAllowed({"ADMIN", "USER"})
     @RequestMapping(value="/details/{room}", method = RequestMethod.GET)
     public ResponseEntity<Speaker> getSpeaker(@PathVariable("room") String room){
 
@@ -25,6 +27,7 @@ public class SpeakerController {
         return ResponseEntity.ok(speaker);
     }
 
+    @RolesAllowed({"ADMIN", "USER"})
     @RequestMapping(value="/details/all",method = RequestMethod.GET)
     public ResponseEntity<List<Speaker>> getAllSpeakers() {
 
@@ -32,16 +35,19 @@ public class SpeakerController {
         return ResponseEntity.ok(speakers);
     }
 
+    @RolesAllowed({"ADMIN", "USER"})
     @RequestMapping(value="/edit/{name}",method = RequestMethod.PATCH)
     public ResponseEntity<Speaker> editSpeaker(@PathVariable("name") String name, @RequestBody Speaker speaker) {
         return ResponseEntity.ok(speakerService.editSpeaker(name, speaker));
     }
 
+    @RolesAllowed({"ADMIN", "USER"})
     @RequestMapping(value="/add",method = RequestMethod.POST, consumes = "application/json")
     public ResponseEntity<Speaker> addSpeaker(@RequestBody Speaker speaker) {
         return new ResponseEntity<Speaker>(speakerService.addSpeaker(speaker), HttpStatus.CREATED);
     }
 
+    @RolesAllowed("ADMIN")
     @RequestMapping(value="/remove/{name}", method = RequestMethod.DELETE)
     public ResponseEntity<Speaker> removeSpeaker(@PathVariable("name") String name) {
         return ResponseEntity.ok(speakerService.removeSpeaker(name));

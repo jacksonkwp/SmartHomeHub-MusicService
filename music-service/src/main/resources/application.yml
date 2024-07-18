@@ -21,6 +21,27 @@ spring:
     hibernate:
       ddl-auto: create
       naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://keycloak:8080/realms/smarthomehub
+          jwk-set-uri: http://keycloak:8080/realms/smarthomehub/protocol/openid-connect/certs
+      client:
+        provider:
+          keycloak:
+            issuer-uri: http://keycloak:8080/realms/smarthomehub
+        registration:
+          keycloak:
+            client-name: music-service
+            client-id: music-service
+            authorization-grant-type: authorization_code
+            client-secret: LupcWMGyTzWUrKIBTeXv6hbRNuSFXHqQ
+            scope:
+              - openid
+              - offline_access
+              - profile
+              - roles
 
 management:
   endpoint:
