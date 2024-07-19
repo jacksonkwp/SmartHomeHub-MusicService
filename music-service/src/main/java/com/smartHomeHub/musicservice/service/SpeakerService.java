@@ -3,9 +3,11 @@ package com.smartHomeHub.musicservice.service;
 import com.smartHomeHub.musicservice.exception.SpeakerNotFoundException;
 import com.smartHomeHub.musicservice.model.Speaker;
 import com.smartHomeHub.musicservice.repository.SpeakerRepository;
+import com.smartHomeHub.musicservice.client.NotificationServiceDiscoveryClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,6 +18,7 @@ import java.util.Optional;
 public class SpeakerService {
 
     private final SpeakerRepository speakerRepo;
+    private final NotificationServiceDiscoveryClient notificationServiceDiscoveryClient;
 
     public Speaker getSpeaker(String room){
 
@@ -37,7 +40,8 @@ public class SpeakerService {
         return foundSpeakers;
     }
 
-    public Speaker addSpeaker(Speaker speaker){
+    @CircuitBreaker(name = "musicService", fallbackMethod = "failedAddSpeakerNotif")
+    public Speaker addSpeaker(Speaker speaker, String authToken){
 
         Speaker newSpeaker = new Speaker();
         newSpeaker.setName(speaker.getName());
@@ -46,7 +50,18 @@ public class SpeakerService {
         newSpeaker.setConnectedDevice(speaker.getConnectedDevice());
         newSpeaker.setState(speaker.getState());
 
-        return speakerRepo.save(newSpeaker);
+        speakerRepo.save(newSpeaker);
+
+        log.info(notificationServiceDiscoveryClient
+                .sendNotification(authToken, "New Speaker Added: " + newSpeaker.getName()));
+
+        return newSpeaker;
+    }
+
+    @SuppressWarnings("unused")
+    private Speaker failedAddSpeakerNotif(Speaker speaker, String authToken, Throwable throwable) {
+        log.info("Triggered failedAddSpeakerNotif fallback when attempting to add a speaker");
+        return getSpeaker(speaker.getRoom());
     }
 
     public Speaker editSpeaker(String name, Speaker speaker){
