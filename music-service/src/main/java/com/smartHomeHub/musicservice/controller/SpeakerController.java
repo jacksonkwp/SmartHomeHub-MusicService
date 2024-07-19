@@ -6,6 +6,7 @@ import jakarta.annotation.security.RolesAllowed;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,8 +44,9 @@ public class SpeakerController {
 
     @RolesAllowed({"ADMIN", "USER"})
     @RequestMapping(value="/add",method = RequestMethod.POST, consumes = "application/json")
-    public ResponseEntity<Speaker> addSpeaker(@RequestBody Speaker speaker) {
-        return new ResponseEntity<Speaker>(speakerService.addSpeaker(speaker), HttpStatus.CREATED);
+    public ResponseEntity<Speaker> addSpeaker(@RequestBody Speaker speaker,
+                                              @RequestHeader(HttpHeaders.AUTHORIZATION) String authToken) {
+        return new ResponseEntity<Speaker>(speakerService.addSpeaker(speaker, authToken), HttpStatus.CREATED);
     }
 
     @RolesAllowed("ADMIN")
