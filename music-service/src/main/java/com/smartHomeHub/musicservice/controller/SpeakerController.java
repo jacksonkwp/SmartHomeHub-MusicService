@@ -49,7 +49,7 @@ public class SpeakerController {
         return new ResponseEntity<Speaker>(speakerService.addSpeaker(speaker, authToken), HttpStatus.CREATED);
     }
 
-    @RolesAllowed("ADMIN")
+    @RolesAllowed({"ADMIN"})
     @RequestMapping(value="/remove/{name}", method = RequestMethod.DELETE)
     public ResponseEntity<Speaker> removeSpeaker(@PathVariable("name") String name) {
         return ResponseEntity.ok(speakerService.removeSpeaker(name));
