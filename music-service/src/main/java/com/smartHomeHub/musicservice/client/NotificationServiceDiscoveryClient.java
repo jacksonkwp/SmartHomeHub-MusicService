@@ -28,12 +28,12 @@ public class NotificationServiceDiscoveryClient {
         List<ServiceInstance> instanceList = discoveryClient.getInstances("gateway-server");
         if (instanceList.isEmpty()) return null;
 
-        String createNotificationStreamUri = String.format("%s/notification/v1/stream?name=speaker-notification-stream",
-                instanceList.getFirst().getUri().toString());
+//        String createNotificationStreamUri = String.format("%s/notification/v1/stream?name=speaker-notification-stream",
+//                instanceList.getFirst().getUri().toString());
+//
+//        log.info("createNotificationStreamUri: {}", createNotificationStreamUri);
 
-        log.info("createNotificationStreamUri: {}", createNotificationStreamUri);
-
-        String sendNotificationUri = String.format("%s/notification/v1/stream/1",
+        String sendNotificationUri = String.format("%s/notification/v1/stream/2",
                 instanceList.getFirst().getUri().toString());
 
         log.info("sendNotificationUri: {}", sendNotificationUri);
