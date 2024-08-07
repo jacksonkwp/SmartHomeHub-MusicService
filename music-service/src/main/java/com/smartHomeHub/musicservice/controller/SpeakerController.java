@@ -2,6 +2,8 @@ package com.smartHomeHub.musicservice.controller;
 
 import com.smartHomeHub.musicservice.model.Speaker;
 import com.smartHomeHub.musicservice.service.SpeakerService;
+import com.smartHomeHub.musicservice.event.KafkaProducer;
+
 import jakarta.annotation.security.RolesAllowed;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,9 @@ public class SpeakerController {
 
     @Autowired
     private SpeakerService speakerService;
+
+    @Autowired
+    private KafkaProducer kafkaProducer;
 
     @RolesAllowed({"ADMIN", "USER"})
     @RequestMapping(value="/details/{room}", method = RequestMethod.GET)
@@ -46,7 +51,9 @@ public class SpeakerController {
     @RequestMapping(value="/add",method = RequestMethod.POST, consumes = "application/json")
     public ResponseEntity<Speaker> addSpeaker(@RequestBody Speaker speaker,
                                               @RequestHeader(HttpHeaders.AUTHORIZATION) String authToken) {
-        return new ResponseEntity<Speaker>(speakerService.addSpeaker(speaker, authToken), HttpStatus.CREATED);
+        ResponseEntity<Speaker> responseEntity = new ResponseEntity<Speaker>(speakerService.addSpeaker(speaker, authToken), HttpStatus.CREATED);
+        kafkaProducer.sendMessage("music-service", "speaker", "speaker added to music service");
+        return responseEntity;
     }
 
     @RolesAllowed({"ADMIN"})
