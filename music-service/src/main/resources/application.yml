@@ -42,6 +42,21 @@ spring:
               - offline_access
               - profile
               - roles
+  cloud:
+    stream:
+      kafka:
+        binder:
+          brokers: kafka-server:9092
+          auto-create-topics: true
+          auto-add-partitions: true
+        bindings:
+          speakerEventSupplier-out-0:
+            producer:
+              sync: true
+      bindings:
+        speakerEventSupplier-out-0:
+          destination: speaker-event-topic
+      output-bindings: speakerEventSupplier-out-0
 
 management:
   endpoint:

@@ -2,10 +2,12 @@ package com.smartHomeHub.musicservice.service;
 
 import com.smartHomeHub.musicservice.exception.SpeakerNotFoundException;
 import com.smartHomeHub.musicservice.model.Speaker;
+import com.smartHomeHub.musicservice.model.SpeakerEvent;
 import com.smartHomeHub.musicservice.repository.SpeakerRepository;
 import com.smartHomeHub.musicservice.client.NotificationServiceDiscoveryClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.stereotype.Service;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 
@@ -19,6 +21,7 @@ public class SpeakerService {
 
     private final SpeakerRepository speakerRepo;
     private final NotificationServiceDiscoveryClient notificationServiceDiscoveryClient;
+    private final StreamBridge streamBridge;
 
     public Speaker getSpeaker(String room){
 
@@ -80,6 +83,17 @@ public class SpeakerService {
 
         speakerRepo.save(speakerToEdit.get());
 
+        //JMS
+        Long deviceId = speakerToEdit.get().getId();
+        log.info("Updating Speaker with id: {}", deviceId);
+        streamBridge.send("speakerEventSupplier-out-0",
+                SpeakerEvent.builder()
+                        .eventName(SpeakerEvent.class.getTypeName())
+                        .action("Speaker Updated")
+                        .speakerId(deviceId)
+                        .build());
+        log.info("Produced Speaker:{} Updated event to speaker-event-topic!", deviceId);
+
         return speakerToEdit.get();
     }
 
@@ -92,6 +106,17 @@ public class SpeakerService {
         }
 
         speakerRepo.delete(speakerToRemove.get());
+
+        // JMS
+        Long deviceId = speakerToRemove.get().getId();
+        log.info("Deleted Speaker with id: {}", deviceId);
+        streamBridge.send("speakerEventSupplier-out-0",
+                SpeakerEvent.builder()
+                        .eventName(SpeakerEvent.class.getTypeName())
+                        .action("Speaker Deleted")
+                        .speakerId(deviceId)
+                        .build());
+        log.info("Produced Speaker:{} Deleted event to speaker-event-topic!", deviceId);
 
         return speakerToRemove.get();
     }

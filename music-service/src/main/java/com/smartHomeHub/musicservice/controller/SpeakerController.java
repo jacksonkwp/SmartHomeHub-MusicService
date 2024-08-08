@@ -51,9 +51,9 @@ public class SpeakerController {
     @RequestMapping(value="/add",method = RequestMethod.POST, consumes = "application/json")
     public ResponseEntity<Speaker> addSpeaker(@RequestBody Speaker speaker,
                                               @RequestHeader(HttpHeaders.AUTHORIZATION) String authToken) {
-        ResponseEntity<Speaker> responseEntity = new ResponseEntity<Speaker>(speakerService.addSpeaker(speaker, authToken), HttpStatus.CREATED);
-        kafkaProducer.sendMessage("music-service", "speaker", "speaker added to music service");
-        return responseEntity;
+        //ResponseEntity<Speaker> responseEntity = new ResponseEntity<Speaker>(speakerService.addSpeaker(speaker, authToken), HttpStatus.CREATED);
+        //kafkaProducer.sendMessage("music-service", "speaker", "speaker added to music service");
+        return new ResponseEntity<Speaker>(speakerService.addSpeaker(speaker, authToken), HttpStatus.CREATED);
     }
 
     @RolesAllowed({"ADMIN"})
